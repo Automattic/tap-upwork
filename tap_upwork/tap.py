@@ -28,6 +28,11 @@ class TapUpWork(Tap):
             description="The client_secret used to generate the OAuth token."
         ),
         th.Property(
+            "organization_id",
+            th.DateTimeType,
+            description="Organization ID to be used in time report filter",
+        ),
+        th.Property(
             "start_date",
             th.DateTimeType,
             description="The earliest record date to sync",
@@ -41,8 +46,9 @@ class TapUpWork(Tap):
             A list of discovered streams.
         """
         return [
-            streams.GroupsStream(self),
-            streams.UsersStream(self),
+            # streams.OrganizationStream(self),
+            streams.TimeReportStream(self),
+            # streams.ContractTimeReportStream(self),
         ]
 
 

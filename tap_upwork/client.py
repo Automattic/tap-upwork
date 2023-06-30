@@ -48,23 +48,4 @@ class UpWorkStream(GraphQLStream):
         Yields:
             Each record from the source.
         """
-        # TODO: Parse response body and return a set of records.
-        resp_json = response.json()
-        yield from resp_json.get("<TODO>")
-
-    def post_process(
-        self,
-        row: dict,
-        context: dict | None = None,  # noqa: ARG002
-    ) -> dict | None:
-        """As needed, append or transform raw data to match expected structure.
-
-        Args:
-            row: An individual record from the stream.
-            context: The stream context.
-
-        Returns:
-            The updated record dictionary, or ``None`` to skip the record.
-        """
-        # TODO: Delete this method if not needed.
-        return row
+        yield from response.json().get("data", {}).get(self.name, [])
