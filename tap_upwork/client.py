@@ -2,10 +2,11 @@
 
 from __future__ import annotations
 
-from typing import Iterable
+from typing import Iterable, Any
 
 import requests  # noqa: TCH002
 from singer_sdk.streams import GraphQLStream
+from singer_sdk.typing import ObjectType, PropertiesList
 
 from tap_upwork.auth import UpWorkAuthenticator
 
@@ -49,3 +50,24 @@ class UpWorkStream(GraphQLStream):
             Each record from the source.
         """
         yield from response.json().get("data", {}).get(self.name, [])
+
+    def prepare_request_payload(
+        self,
+        context: dict | None,
+        next_page_token: Any | None,
+    ) -> dict | None:
+        request_data = super().prepare_request_payload(context, next_page_token)
+        self.logger.info(f"Request payload (query and variables): {request_data}")
+        return request_data
+
+    @staticmethod
+    def property_list_to_graphql_query(properties: ObjectType, indentation='') -> str:
+        """Convert a list of properties to a GraphQL query string."""
+        query = ''
+        indentation += '\t'
+        for _, p in properties.wrapped.items():
+            query += f'\n{indentation + p.name}'
+            if isinstance(p.wrapped, PropertiesList) or isinstance(p.wrapped, ObjectType):
+                query += '{' + UpWorkStream.property_list_to_graphql_query(p.wrapped, indentation)
+                query += '\n' + indentation + '}'
+        return query

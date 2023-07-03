@@ -46,7 +46,7 @@ class TapUpWork(Tap):
             A list of discovered streams.
         """
         return [
-            # streams.OrganizationStream(self),
+            streams.OrganizationStream(self),
             streams.TimeReportStream(self),
             # streams.ContractTimeReportStream(self),
         ]
