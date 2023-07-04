@@ -5,6 +5,7 @@ from __future__ import annotations
 from singer_sdk import Tap
 from singer_sdk import typing as th  # JSON schema typing helpers
 
+# TODO: Import your custom stream types here:
 from tap_upwork import streams
 
 
@@ -13,29 +14,31 @@ class TapUpWork(Tap):
 
     name = "tap-upwork"
 
+    # TODO: Update this section with the actual config values you expect:
     config_jsonschema = th.PropertiesList(
         th.Property(
-            "client_id",
-            th.StringType,
-            required=True,
-            description="The client_id used to generate the OAuth token."
-        ),
-        th.Property(
-            "client_secret",
+            "auth_token",
             th.StringType,
             required=True,
             secret=True,  # Flag config as protected.
-            description="The client_secret used to generate the OAuth token."
+            description="The token to authenticate against the API service",
         ),
         th.Property(
-            "organization_id",
-            th.DateTimeType,
-            description="Organization ID to be used in time report filter",
+            "project_ids",
+            th.ArrayType(th.StringType),
+            required=True,
+            description="Project IDs to replicate",
         ),
         th.Property(
             "start_date",
             th.DateTimeType,
             description="The earliest record date to sync",
+        ),
+        th.Property(
+            "api_url",
+            th.StringType,
+            default="https://api.mysample.com",
+            description="The url for the API service",
         ),
     ).to_dict()
 
@@ -46,9 +49,8 @@ class TapUpWork(Tap):
             A list of discovered streams.
         """
         return [
-            streams.OrganizationStream(self),
-            streams.TimeReportStream(self),
-            # streams.ContractTimeReportStream(self),
+            streams.GroupsStream(self),
+            streams.UsersStream(self),
         ]
 
 
