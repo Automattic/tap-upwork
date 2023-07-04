@@ -39,10 +39,15 @@ jobs:
         python-version: '3.10'
         cache: 'pip'
         cache-dependency-path: '**/setup.py'
+    - name: Install Poetry
+      run: |
+        pip install poetry
     - name: Install dependencies
       run: |
         poetry install
     - name: Running pylint
-      run: pylint tap_upwork
+      run: |
+        pylint tap_upwork
     - name: Running black formatter check
-      run: black --check --diff --skip-string-normalization .
+      run: |
+        black --check --diff --skip-string-normalization .
