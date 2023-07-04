@@ -29,7 +29,9 @@ plugins:
       label: Organization ID
       description: Organization ID to be used in time report filter.
     - name: start_date
-      value: '2023-07-01T00:00:00Z'
+      kind: date_iso8601
+      label: Start Date
+      description: Determines how much historical data will be extracted
   loaders:
   - name: target-jsonl
     variant: andyh1203
