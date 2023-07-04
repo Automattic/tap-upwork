@@ -56,6 +56,20 @@ class UpWorkStream(GraphQLStream):
         context: dict | None,
         next_page_token: Any | None,
     ) -> dict | None:
+        """Prepare the data payload for the GraphQL API request and print the
+        request data.
+
+        Args:
+            context: Stream partition or context dictionary.
+            next_page_token: Token, page number or any request argument to request the
+                next page of data.
+
+        Returns:
+            Dictionary with the body to use for the request.
+
+        Raises:
+            ValueError: If the `query` property is not set in the request body.
+        """
         request_data = super().prepare_request_payload(context, next_page_token)
         self.logger.info(f'Request payload (query and variables): {request_data}')
         return request_data

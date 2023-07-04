@@ -24,7 +24,7 @@ class TapUpWork(Tap):
             'client_secret',
             th.StringType,
             required=True,
-            secret=True,  # Flag config as protected.
+            secret=True,
             description='The client_secret used to generate the OAuth token.',
         ),
         th.Property(
