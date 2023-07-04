@@ -66,7 +66,7 @@ You can easily run `tap-upwork` by itself or in a pipeline using [Meltano](https
 ```bash
 tap-upwork --version
 tap-upwork --help
-tap-upwork --config CONFIG --discover > ./catalog.json
+tap-upwork --config config.json --discover > ./catalog.json
 ```
 
 ## Developer Resources
@@ -80,14 +80,15 @@ pipx install poetry
 poetry install
 ```
 
-### Create and Run Tests
+### Run Tests
 
-Create tests within the `tests` subfolder and
-  then run:
+The core and unittests can be run with the following command:
 
 ```bash
 poetry run pytest
 ```
+
+> The CI will only run the unittests because the core tests require a valid config file.
 
 You can also test the `tap-upwork` CLI interface directly using `poetry run`:
 

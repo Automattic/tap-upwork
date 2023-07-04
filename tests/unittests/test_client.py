@@ -1,6 +1,13 @@
 from unittest import TestCase
 
-from singer_sdk.typing import PropertiesList, Property, StringType, IntegerType, NumberType, ObjectType
+from singer_sdk.typing import (
+    PropertiesList,
+    Property,
+    StringType,
+    IntegerType,
+    NumberType,
+    ObjectType,
+)
 
 from tap_upwork.client import UpWorkStream
 
@@ -14,18 +21,30 @@ class TestClient(TestCase):
             Property('string', StringType),
             Property('integer', IntegerType),
             Property('number', NumberType),
-            Property('object', ObjectType(
-                Property('object_nested_field1', ObjectType(
-                    Property('object_nested_field1_field1', StringType),
-                )),
-                Property('object_nested_field2', StringType),
-            )),
-            Property('property_list', PropertiesList(
-                Property('property_list_nested_field1', IntegerType),
-                Property('property_list_nested_field2', PropertiesList(
-                    Property('property_list_nested_field2_field1', StringType),
-                )),
-            )),
+            Property(
+                'object',
+                ObjectType(
+                    Property(
+                        'object_nested_field1',
+                        ObjectType(
+                            Property('object_nested_field1_field1', StringType),
+                        ),
+                    ),
+                    Property('object_nested_field2', StringType),
+                ),
+            ),
+            Property(
+                'property_list',
+                PropertiesList(
+                    Property('property_list_nested_field1', IntegerType),
+                    Property(
+                        'property_list_nested_field2',
+                        PropertiesList(
+                            Property('property_list_nested_field2_field1', StringType),
+                        ),
+                    ),
+                ),
+            ),
         )
 
         expected_query = """
