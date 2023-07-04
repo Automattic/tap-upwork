@@ -18,7 +18,7 @@ GENERIC_ORGANIZATION_PROPERTIES = PropertiesList(
     Property('rid', StringType, description='ID of the current organization'),
     Property('name', StringType, description='Name of the current organization'),
     Property('type', StringType, description='Type of the Organization'),
-    Property('legacyType', IntegerType, description='Legacy type of the Organization'),
+    Property('legacyType', StringType, description='Legacy type of the Organization'),
     Property('flag', ObjectType(
         Property('client', BooleanType),
         Property('vendor', BooleanType),
