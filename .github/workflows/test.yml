@@ -45,7 +45,7 @@ jobs:
         poetry install
     - name: Running pylint
       run: |
-        pylint tap_upwork
+        poetry run pylint tap_upwork
     - name: Running black formatter check
       run: |
-        black --check --diff --skip-string-normalization .
+        poetry run black --check --diff --skip-string-normalization .
