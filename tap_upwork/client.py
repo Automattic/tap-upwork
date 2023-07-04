@@ -68,6 +68,8 @@ class UpWorkStream(GraphQLStream):
         for _, prop in properties.wrapped.items():
             query += f'\n{indentation + prop.name}'
             if isinstance(prop.wrapped, (PropertiesList, ObjectType)):
-                query += '{' + UpWorkStream.property_list_to_graphql_query(prop.wrapped, indentation)
+                query += '{' + UpWorkStream.property_list_to_graphql_query(
+                    prop.wrapped, indentation
+                )
                 query += '\n' + indentation + '}'
         return query

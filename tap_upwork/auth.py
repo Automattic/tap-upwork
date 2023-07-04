@@ -19,7 +19,7 @@ class UpWorkAuthenticator(OAuthAuthenticator, metaclass=SingletonMeta):
             'grant_type': 'client_credentials',
             'scope': self.oauth_scopes,
             'client_id': self.config['client_id'],
-            'client_secret': self.config['client_secret']
+            'client_secret': self.config['client_secret'],
         }
 
     @classmethod

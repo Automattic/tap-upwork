@@ -18,14 +18,14 @@ class TapUpWork(Tap):
             'client_id',
             th.StringType,
             required=True,
-            description='The client_id used to generate the OAuth token.'
+            description='The client_id used to generate the OAuth token.',
         ),
         th.Property(
             'client_secret',
             th.StringType,
             required=True,
             secret=True,  # Flag config as protected.
-            description='The client_secret used to generate the OAuth token.'
+            description='The client_secret used to generate the OAuth token.',
         ),
         th.Property(
             'organization_id',
