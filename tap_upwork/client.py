@@ -17,7 +17,7 @@ class UpWorkStream(GraphQLStream):
     @property
     def url_base(self) -> str:
         """Return the API URL root, configurable via tap settings."""
-        return "https://api.upwork.com/graphql"
+        return 'https://api.upwork.com/graphql'
 
     @property
     def authenticator(self) -> UpWorkAuthenticator:
@@ -36,8 +36,8 @@ class UpWorkStream(GraphQLStream):
             A dictionary of HTTP headers.
         """
         headers = {}
-        if "user_agent" in self.config:
-            headers["User-Agent"] = self.config.get("user_agent")
+        if 'user_agent' in self.config:
+            headers['User-Agent'] = self.config.get('user_agent')
         return headers
 
     def parse_response(self, response: requests.Response) -> Iterable[dict]:
@@ -49,7 +49,7 @@ class UpWorkStream(GraphQLStream):
         Yields:
             Each record from the source.
         """
-        yield from response.json().get("data", {}).get(self.name, [])
+        yield from response.json().get('data', {}).get(self.name, [])
 
     def prepare_request_payload(
         self,
@@ -57,7 +57,7 @@ class UpWorkStream(GraphQLStream):
         next_page_token: Any | None,
     ) -> dict | None:
         request_data = super().prepare_request_payload(context, next_page_token)
-        self.logger.info(f"Request payload (query and variables): {request_data}")
+        self.logger.info(f'Request payload (query and variables): {request_data}')
         return request_data
 
     @staticmethod
@@ -65,9 +65,9 @@ class UpWorkStream(GraphQLStream):
         """Convert a list of properties to a GraphQL query string."""
         query = ''
         indentation += '\t'
-        for _, p in properties.wrapped.items():
-            query += f'\n{indentation + p.name}'
-            if isinstance(p.wrapped, PropertiesList) or isinstance(p.wrapped, ObjectType):
-                query += '{' + UpWorkStream.property_list_to_graphql_query(p.wrapped, indentation)
+        for _, prop in properties.wrapped.items():
+            query += f'\n{indentation + prop.name}'
+            if isinstance(prop.wrapped, (PropertiesList, ObjectType)):
+                query += '{' + UpWorkStream.property_list_to_graphql_query(prop.wrapped, indentation)
                 query += '\n' + indentation + '}'
         return query

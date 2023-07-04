@@ -16,14 +16,14 @@ class UpWorkAuthenticator(OAuthAuthenticator, metaclass=SingletonMeta):
             A dict with the request body
         """
         return {
-            "grant_type": "client_credentials",
-            "scope": self.oauth_scopes,
-            "client_id": self.config["client_id"],
-            "client_secret": self.config["client_secret"]
+            'grant_type': 'client_credentials',
+            'scope': self.oauth_scopes,
+            'client_id': self.config['client_id'],
+            'client_secret': self.config['client_secret']
         }
 
     @classmethod
-    def create_for_stream(cls, stream) -> UpWorkAuthenticator:  # noqa: ANN001
+    def create_for_stream(cls, stream) -> UpWorkAuthenticator:
         """Instantiate an authenticator for a specific Singer stream.
 
         Args:
@@ -34,5 +34,5 @@ class UpWorkAuthenticator(OAuthAuthenticator, metaclass=SingletonMeta):
         """
         return cls(
             stream=stream,
-            auth_endpoint="https://www.upwork.com/api/v3/oauth2/token",
+            auth_endpoint='https://www.upwork.com/api/v3/oauth2/token',
         )

@@ -36,3 +36,8 @@ repos:
   - id: mypy
     additional_dependencies:
     - types-requests
+
+- repo: https://github.com/zricethezav/gitleaks
+  rev: v8.17.0
+  hooks:
+    - id: gitleaks

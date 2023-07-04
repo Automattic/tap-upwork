@@ -11,31 +11,31 @@ from tap_upwork import streams
 class TapUpWork(Tap):
     """UpWork tap class."""
 
-    name = "tap-upwork"
+    name = 'tap-upwork'
 
     config_jsonschema = th.PropertiesList(
         th.Property(
-            "client_id",
+            'client_id',
             th.StringType,
             required=True,
-            description="The client_id used to generate the OAuth token."
+            description='The client_id used to generate the OAuth token.'
         ),
         th.Property(
-            "client_secret",
+            'client_secret',
             th.StringType,
             required=True,
             secret=True,  # Flag config as protected.
-            description="The client_secret used to generate the OAuth token."
+            description='The client_secret used to generate the OAuth token.'
         ),
         th.Property(
-            "organization_id",
+            'organization_id',
             th.DateTimeType,
-            description="Organization ID to be used in time report filter",
+            description='Organization ID to be used in time report filter',
         ),
         th.Property(
-            "start_date",
+            'start_date',
             th.DateTimeType,
-            description="The earliest record date to sync",
+            description='The earliest record date to sync',
         ),
     ).to_dict()
 
@@ -52,5 +52,6 @@ class TapUpWork(Tap):
         ]
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
+    # pylint: disable=no-value-for-parameter
     TapUpWork.cli()

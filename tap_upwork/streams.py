@@ -7,8 +7,7 @@ from typing import Iterable, Optional, Dict, Any
 
 import pendulum
 import requests
-from singer_sdk.typing import PropertiesList, Property, StringType, IntegerType, ObjectType, BooleanType, DateTimeType, \
-    NumberType
+from singer_sdk.typing import PropertiesList, Property, StringType, ObjectType, BooleanType, DateTimeType, NumberType
 
 from tap_upwork.client import UpWorkStream
 
@@ -93,14 +92,14 @@ class ContractTimeReportStream(UpWorkStream):
             or pendulum.from_timestamp(0)
         )
         return {
-            "filter": {
-                "organizationId_eq": self.config.get("organization_id"),
-                "timeReportDate_bt": {
-                    "rangeStart": start_date.strftime("%Y%m%d"),
-                    "rangeEnd": pendulum.now().strftime("%Y%m%d"),
+            'filter': {
+                'organizationId_eq': self.config.get('organization_id'),
+                'timeReportDate_bt': {
+                    'rangeStart': start_date.strftime('%Y%m%d'),
+                    'rangeEnd': pendulum.now().strftime('%Y%m%d'),
                 }
             },
-            "pagination": {"start": 1}
+            'pagination': {'start': 1}
         }
 
 
@@ -128,11 +127,11 @@ class TimeReportStream(UpWorkStream):
             or pendulum.from_timestamp(0)
         )
         return {
-            "filter": {
-                "organizationId_eq": self.config.get("organization_id"),
-                "timeReportDate_bt": {
-                    "rangeStart": start_date.strftime("%Y%m%d"),
-                    "rangeEnd": pendulum.now().strftime("%Y%m%d"),
+            'filter': {
+                'organizationId_eq': self.config.get('organization_id'),
+                'timeReportDate_bt': {
+                    'rangeStart': start_date.strftime('%Y%m%d'),
+                    'rangeEnd': pendulum.now().strftime('%Y%m%d'),
                 }
             }
         }
