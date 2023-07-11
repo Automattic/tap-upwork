@@ -63,15 +63,18 @@ class UpWorkStream(GraphQLStream):
         return request_data
 
     @staticmethod
-    def property_list_to_graphql_query(properties: ObjectType, indentation='') -> str:
-        """Convert a list of properties to a GraphQL query string."""
-        query = ''
-        indentation += '\t'
+    def property_list_to_graphql_query(properties: ObjectType) -> str:
+        """Convert a list of properties to a fraction GraphQL query string.
+
+        Args:
+            properties: A list of properties to convert to a GraphQL query string.
+
+        Returns:
+            A fraction of GraphQL query string extract from all properties.
+        """
+        query = []
         for _, prop in properties.wrapped.items():
-            query += f'\n{indentation + prop.name}'
+            query.append(prop.name)
             if isinstance(prop.wrapped, (PropertiesList, ObjectType)):
-                query += '{' + UpWorkStream.property_list_to_graphql_query(
-                    prop.wrapped, indentation
-                )
-                query += '\n' + indentation + '}'
-        return query
+                query.extend(['{', UpWorkStream.property_list_to_graphql_query(prop.wrapped), '}'])
+        return ' '.join(query)
