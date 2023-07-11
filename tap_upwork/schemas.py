@@ -44,7 +44,6 @@ GENERIC_USER_PROPERTIES = PropertiesList(
     Property('nid', StringType, description='Nickname ID of a user'),
     Property('rid', StringType, description='Record ID of a user'),
     Property('name', StringType, description='First name + abbreviated last name'),
-    Property('publicUrl', StringType, description='The public user url'),
     Property('email', StringType, description='email of user'),
 )
 

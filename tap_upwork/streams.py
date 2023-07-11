@@ -49,12 +49,18 @@ class ContractTimeReportStream(UpWorkStream):
             'filter': {
                 'organizationId_eq': self.config.get('organization_id'),
                 'timeReportDate_bt': {
-                    'rangeStart': start_date.strftime('%Y%m%d'),
-                    'rangeEnd': pendulum.now().strftime('%Y%m%d'),
+                    'rangeStart': start_date.strftime('%Y-%m-%d'),
+                    'rangeEnd': pendulum.now().strftime('%Y-%m-%d'),
                 },
-            },
-            'pagination': {'start': 1},
+            }
         }
+
+    def parse_response(self, response: requests.Response) -> Iterable[dict]:
+        """Parse the response and return an iterator of result rows."""
+        yield from response.json().get('data', {}).get(self.name, {}).get('edges', [])
+
+    def post_process(self, row: dict, context: dict | None = None) -> dict:
+        return row.get('node', {})
 
 
 class TimeReportStream(UpWorkStream):

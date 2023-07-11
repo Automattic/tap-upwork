@@ -48,7 +48,7 @@ class TapUpWork(Tap):
         return [
             streams.OrganizationStream(self),
             streams.TimeReportStream(self),
-            # streams.ContractTimeReportStream(self),
+            streams.ContractTimeReportStream(self),
         ]
 
 
