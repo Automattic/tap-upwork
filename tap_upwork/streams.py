@@ -18,7 +18,6 @@ class ContractTimeReportStream(UpWorkStream):
 
     name = 'contractTimeReport'
     schema = TIME_REPORT_PROPERTIES.to_dict()
-    primary_keys = []
     replication_key = 'dateWorkedOn'
     records_jsonpath = '$.data.contractTimeReport.edges[*].node'
     next_page_token_jsonpath = '$.data.contractTimeReport.pageInfo.endCursor'
@@ -68,7 +67,6 @@ class TimeReportStream(UpWorkStream):
 
     name = 'timeReport'
     schema = TIME_REPORT_PROPERTIES.to_dict()
-    primary_keys = []
     replication_key = 'dateWorkedOn'
     query = f"""
         query timeReport($filter: TimeReportFilter) {{
