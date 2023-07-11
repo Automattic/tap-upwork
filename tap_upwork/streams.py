@@ -39,7 +39,9 @@ class ContractTimeReportStream(UpWorkStream):
     }}
     """
 
-    def get_url_params(self, context: Optional[dict], next_page_token) -> Dict[str, Any]:
+    def get_url_params(
+        self, context: Optional[dict], next_page_token
+    ) -> Dict[str, Any]:
         """Return a dictionary of values to be as variables in the GraphQL query."""
         start_date = pendulum.instance(
             self.get_starting_timestamp(context) or pendulum.from_timestamp(0)
@@ -50,9 +52,9 @@ class ContractTimeReportStream(UpWorkStream):
                 'timeReportDate_bt': {
                     'rangeStart': start_date.strftime('%Y-%m-%d'),
                     'rangeEnd': pendulum.now().strftime('%Y-%m-%d'),
-                }
+                },
             },
-            'pagination': {'first': 500}
+            'pagination': {'first': 500},
         }
         if next_page_token:
             params['pagination']['after'] = next_page_token
