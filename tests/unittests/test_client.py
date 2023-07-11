@@ -47,9 +47,11 @@ class TestClient(TestCase):
             ),
         )
 
-        expected_query = 'string integer number object { ' \
-                         'object_nested_field1 { object_nested_field1_field1 } object_nested_field2 } ' \
-                         'property_list { property_list_nested_field1 property_list_nested_field2 { property_list_nested_field2_field1 } }'
+        expected_query = (
+            'string integer number object { '
+            'object_nested_field1 { object_nested_field1_field1 } object_nested_field2 } '
+            'property_list { property_list_nested_field1 property_list_nested_field2 { property_list_nested_field2_field1 } }'
+        )
         result_query = UpWorkStream.property_list_to_graphql_query(property_list)
 
         self.assertEqual(expected_query, result_query)

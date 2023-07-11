@@ -76,5 +76,7 @@ class UpWorkStream(GraphQLStream):
         for _, prop in properties.wrapped.items():
             query.append(prop.name)
             if isinstance(prop.wrapped, (PropertiesList, ObjectType)):
-                query.extend(['{', UpWorkStream.property_list_to_graphql_query(prop.wrapped), '}'])
+                query.append(
+                    f'{{ {UpWorkStream.property_list_to_graphql_query(prop.wrapped)} }}'
+                )
         return ' '.join(query)
