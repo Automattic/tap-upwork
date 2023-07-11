@@ -2,9 +2,8 @@
 
 from __future__ import annotations
 
-from typing import Iterable, Any
+from typing import Any
 
-import requests  # noqa: TCH002
 from singer_sdk.streams import GraphQLStream
 from singer_sdk.typing import ObjectType, PropertiesList
 
@@ -39,17 +38,6 @@ class UpWorkStream(GraphQLStream):
         if 'user_agent' in self.config:
             headers['User-Agent'] = self.config.get('user_agent')
         return headers
-
-    def parse_response(self, response: requests.Response) -> Iterable[dict]:
-        """Parse the response and return an iterator of result records.
-
-        Args:
-            response: The HTTP ``requests.Response`` object.
-
-        Yields:
-            Each record from the source.
-        """
-        yield from response.json().get('data', {}).get(self.name, [])
 
     def prepare_request_payload(
         self,

@@ -3,10 +3,9 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Iterable, Optional, Dict, Any
+from typing import Optional, Dict, Any
 
 import pendulum
-import requests
 
 from tap_upwork.client import UpWorkStream
 from tap_upwork.schemas import TIME_REPORT_PROPERTIES, GENERIC_ORGANIZATION_PROPERTIES
@@ -21,6 +20,8 @@ class ContractTimeReportStream(UpWorkStream):
     schema = TIME_REPORT_PROPERTIES.to_dict()
     primary_keys = []
     replication_key = 'dateWorkedOn'
+    records_jsonpath = '$.data.contractTimeReport.edges[*].node'
+    next_page_token_jsonpath = '$.data.contractTimeReport.pageInfo.endCursor'
     query = f"""
     query contractTimeReport($filter: TimeReportFilter, $pagination: Pagination) {{
       contractTimeReport(filter: $filter, pagination: $pagination) {{
@@ -38,29 +39,24 @@ class ContractTimeReportStream(UpWorkStream):
     }}
     """
 
-    def get_url_params(
-        self, context: Optional[dict], next_page_token: Optional[datetime]
-    ) -> Dict[str, Any]:
+    def get_url_params(self, context: Optional[dict], next_page_token) -> Dict[str, Any]:
         """Return a dictionary of values to be as variables in the GraphQL query."""
         start_date = pendulum.instance(
             self.get_starting_timestamp(context) or pendulum.from_timestamp(0)
         )
-        return {
+        params = {
             'filter': {
                 'organizationId_eq': self.config.get('organization_id'),
                 'timeReportDate_bt': {
                     'rangeStart': start_date.strftime('%Y-%m-%d'),
                     'rangeEnd': pendulum.now().strftime('%Y-%m-%d'),
-                },
-            }
+                }
+            },
+            'pagination': {'first': 500}
         }
-
-    def parse_response(self, response: requests.Response) -> Iterable[dict]:
-        """Parse the response and return an iterator of result rows."""
-        yield from response.json().get('data', {}).get(self.name, {}).get('edges', [])
-
-    def post_process(self, row: dict, context: dict | None = None) -> dict:
-        return row.get('node', {})
+        if next_page_token:
+            params['pagination']['after'] = next_page_token
+        return params
 
 
 class TimeReportStream(UpWorkStream):
@@ -113,7 +109,3 @@ class OrganizationStream(UpWorkStream):
                 {UpWorkStream.property_list_to_graphql_query(GENERIC_ORGANIZATION_PROPERTIES)}
             }}
         }}"""
-
-    def parse_response(self, response: requests.Response) -> Iterable[dict]:
-        """Parse the response and return an iterator of result rows."""
-        yield response.json().get('data', {}).get(self.name, {})
