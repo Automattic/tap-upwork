@@ -48,6 +48,18 @@ GENERIC_USER_PROPERTIES = PropertiesList(
 )
 
 
+CONTRACT_DETAILS_PROPERTIES = PropertiesList(
+    Property('id', StringType, description='basic contract data'),
+    Property('title', StringType),
+    Property('status', StringType),
+    Property('deliveryModel', StringType),
+    Property('createDate', BooleanType),
+    Property('modifyDate', BooleanType),
+    Property('startDate', BooleanType),
+    Property('endDate', BooleanType),
+)
+
+
 TIME_REPORT_PROPERTIES = PropertiesList(
     Property('dateWorkedOn', DateTimeType, description='Date of the time report'),
     Property('weekWorkedOn', DateTimeType, description='Week of the time report'),
@@ -63,6 +75,7 @@ TIME_REPORT_PROPERTIES = PropertiesList(
         GENERIC_ORGANIZATION_PROPERTIES,
         description='Team associated with the time report',
     ),
+    Property('contract', CONTRACT_DETAILS_PROPERTIES),
     Property('task', StringType, description='Task associated with the time report'),
     Property(
         'taskDescription',
