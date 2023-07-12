@@ -75,7 +75,11 @@ TIME_REPORT_PROPERTIES = PropertiesList(
         GENERIC_ORGANIZATION_PROPERTIES,
         description='Team associated with the time report',
     ),
-    Property('contract', CONTRACT_DETAILS_PROPERTIES),
+    Property(
+        'contract',
+        CONTRACT_DETAILS_PROPERTIES,
+        description='Contract-Offer associated with the time report',
+    ),
     Property('task', StringType, description='Task associated with the time report'),
     Property(
         'taskDescription',
