@@ -2,88 +2,110 @@
 
 from __future__ import annotations
 
-from pathlib import Path
+from datetime import datetime
+from typing import Optional, Dict, Any
 
-from singer_sdk import typing as th  # JSON Schema typing helpers
+import pendulum
 
 from tap_upwork.client import UpWorkStream
-
-# TODO: Delete this is if not using json files for schema definition
-SCHEMAS_DIR = Path(__file__).parent / Path("./schemas")
-# TODO: - Override `UsersStream` and `GroupsStream` with your own stream definition.
-#       - Copy-paste as many times as needed to create multiple stream types.
+from tap_upwork.schemas import TIME_REPORT_PROPERTIES, GENERIC_ORGANIZATION_PROPERTIES
 
 
-class UsersStream(UpWorkStream):
-    """Define custom stream."""
+class ContractTimeReportStream(UpWorkStream):
+    """Define contract time report stream.
+    https://www.upwork.com/developer/documentation/graphql/api/docs/index.html#query-contractTimeReport
+    """
 
-    name = "users"
-    # Optionally, you may also use `schema_filepath` in place of `schema`:
-    # schema_filepath = SCHEMAS_DIR / "users.json"  # noqa: ERA001
-    schema = th.PropertiesList(
-        th.Property("name", th.StringType),
-        th.Property(
-            "id",
-            th.StringType,
-            description="The user's system ID",
-        ),
-        th.Property(
-            "age",
-            th.IntegerType,
-            description="The user's age in years",
-        ),
-        th.Property(
-            "email",
-            th.StringType,
-            description="The user's email address",
-        ),
-        th.Property(
-            "address",
-            th.ObjectType(
-                th.Property("street", th.StringType),
-                th.Property("city", th.StringType),
-                th.Property(
-                    "state",
-                    th.StringType,
-                    description="State name in ISO 3166-2 format",
-                ),
-                th.Property("zip", th.StringType),
-            ),
-        ),
-    ).to_dict()
-    primary_keys = ["id"]
-    replication_key = None
-    graphql_query = """
-        users {
-            name
-            id
-            age
-            email
-            address {
-                street
-                city
-                state
-                zip
+    name = 'contractTimeReport'
+    schema = TIME_REPORT_PROPERTIES.to_dict()
+    replication_key = 'dateWorkedOn'
+    records_jsonpath = '$.data.contractTimeReport.edges[*].node'
+    next_page_token_jsonpath = '$.data.contractTimeReport.pageInfo.endCursor'
+    query = f"""
+    query contractTimeReport($filter: TimeReportFilter, $pagination: Pagination) {{
+      contractTimeReport(filter: $filter, pagination: $pagination) {{
+        totalCount
+        edges {{
+          node {{
+            {UpWorkStream.property_list_to_graphql_query(TIME_REPORT_PROPERTIES)}
+          }}
+        }}
+       pageInfo {{
+          endCursor
+          hasNextPage
+        }}
+      }}
+    }}
+    """
+
+    def get_url_params(
+        self, context: Optional[dict], next_page_token
+    ) -> Dict[str, Any]:
+        """Return a dictionary of values to be as variables in the GraphQL query."""
+        start_date = pendulum.instance(
+            self.get_starting_timestamp(context) or pendulum.from_timestamp(0)
+        )
+        params = {
+            'filter': {
+                'organizationId_eq': self.config.get('organization_id'),
+                'timeReportDate_bt': {
+                    'rangeStart': start_date.strftime('%Y-%m-%d'),
+                    'rangeEnd': pendulum.now().strftime('%Y-%m-%d'),
+                },
+            },
+            'pagination': {'first': 500},
+        }
+        if next_page_token:
+            params['pagination']['after'] = next_page_token
+        return params
+
+
+class TimeReportStream(UpWorkStream):
+    """Define time report stream
+    https://www.upwork.com/developer/documentation/graphql/api/docs/index.html#query-timeReport
+    """
+
+    name = 'timeReport'
+    schema = TIME_REPORT_PROPERTIES.to_dict()
+    replication_key = 'dateWorkedOn'
+    query = f"""
+        query timeReport($filter: TimeReportFilter) {{
+          timeReport(filter: $filter) {{
+            {UpWorkStream.property_list_to_graphql_query(TIME_REPORT_PROPERTIES)}
+          }}
+        }}
+        """
+
+    def get_url_params(
+        self, context: Optional[dict], next_page_token: Optional[datetime]
+    ) -> Dict[str, Any]:
+        """Return a dictionary of values to be as variables in the GraphQL query."""
+        start_date = pendulum.instance(
+            self.get_starting_timestamp(context) or pendulum.from_timestamp(0)
+        )
+        return {
+            'filter': {
+                'organizationId_eq': self.config.get('organization_id'),
+                'timeReportDate_bt': {
+                    'rangeStart': start_date.strftime('%Y%m%d'),
+                    'rangeEnd': pendulum.now().strftime('%Y%m%d'),
+                },
             }
         }
-        """
 
 
-class GroupsStream(UpWorkStream):
-    """Define custom stream."""
+class OrganizationStream(UpWorkStream):
+    """Define organization stream.
+    https://www.upwork.com/developer/documentation/graphql/api/docs/index.html#query-organization
+    """
 
-    name = "groups"
-    schema = th.PropertiesList(
-        th.Property("name", th.StringType),
-        th.Property("id", th.StringType),
-        th.Property("modified", th.DateTimeType),
-    ).to_dict()
-    primary_keys = ["id"]
-    replication_key = "modified"
-    graphql_query = """
-        groups {
-            name
-            id
-            modified
-        }
-        """
+    name = 'organization'
+    schema = GENERIC_ORGANIZATION_PROPERTIES.to_dict()
+    primary_keys = ['id']
+    replication_key = None  # Incremental bookmarks not needed
+    query = f"""
+        query {{
+            organization {{
+                {UpWorkStream.property_list_to_graphql_query(GENERIC_ORGANIZATION_PROPERTIES)}
+            }}
+        }}"""

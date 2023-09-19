@@ -16,14 +16,22 @@ plugins:
     - about
     - stream-maps
     config:
-      start_date: '2010-01-01T00:00:00Z'
+      start_date: '2023-07-01T00:00:00Z'
     settings:
-    # TODO: To configure using Meltano, declare settings and their types here:
-    - name: username
-    - name: password
+    - name: client_id
+      label: Client ID
+      description: The client_id used to generate the OAuth token.
+    - name: client_secret
       kind: password
+      label: Client Secret
+      description: The client_secret used to generate the OAuth token.
+    - name: organization_id
+      label: Organization ID
+      description: Organization ID to be used in time report filter.
     - name: start_date
-      value: '2010-01-01T00:00:00Z'
+      kind: date_iso8601
+      label: Start Date
+      description: Determines how much historical data will be extracted
   loaders:
   - name: target-jsonl
     variant: andyh1203

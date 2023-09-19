@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-from typing import Iterable
+from typing import Any
 
-import requests  # noqa: TCH002
 from singer_sdk.streams import GraphQLStream
+from singer_sdk.typing import ObjectType, PropertiesList
 
 from tap_upwork.auth import UpWorkAuthenticator
 
@@ -16,8 +16,7 @@ class UpWorkStream(GraphQLStream):
     @property
     def url_base(self) -> str:
         """Return the API URL root, configurable via tap settings."""
-        # TODO: hardcode a value here, or retrieve it from self.config
-        return "https://api.mysample.com"
+        return 'https://api.upwork.com/graphql'
 
     @property
     def authenticator(self) -> UpWorkAuthenticator:
@@ -36,36 +35,48 @@ class UpWorkStream(GraphQLStream):
             A dictionary of HTTP headers.
         """
         headers = {}
-        if "user_agent" in self.config:
-            headers["User-Agent"] = self.config.get("user_agent")
+        if 'user_agent' in self.config:
+            headers['User-Agent'] = self.config.get('user_agent')
         return headers
 
-    def parse_response(self, response: requests.Response) -> Iterable[dict]:
-        """Parse the response and return an iterator of result records.
-
-        Args:
-            response: The HTTP ``requests.Response`` object.
-
-        Yields:
-            Each record from the source.
-        """
-        # TODO: Parse response body and return a set of records.
-        resp_json = response.json()
-        yield from resp_json.get("<TODO>")
-
-    def post_process(
+    def prepare_request_payload(
         self,
-        row: dict,
-        context: dict | None = None,  # noqa: ARG002
+        context: dict | None,
+        next_page_token: Any | None,
     ) -> dict | None:
-        """As needed, append or transform raw data to match expected structure.
+        """Prepare the data payload for the GraphQL API request and print the
+        request data.
 
         Args:
-            row: An individual record from the stream.
-            context: The stream context.
+            context: Stream partition or context dictionary.
+            next_page_token: Token, page number or any request argument to request the
+                next page of data.
 
         Returns:
-            The updated record dictionary, or ``None`` to skip the record.
+            Dictionary with the body to use for the request.
+
+        Raises:
+            ValueError: If the `query` property is not set in the request body.
         """
-        # TODO: Delete this method if not needed.
-        return row
+        request_data = super().prepare_request_payload(context, next_page_token)
+        self.logger.info(f'Request payload (query and variables): {request_data}')
+        return request_data
+
+    @staticmethod
+    def property_list_to_graphql_query(properties: ObjectType) -> str:
+        """Convert a list of properties to a fraction GraphQL query string.
+
+        Args:
+            properties: A list of properties to convert to a GraphQL query string.
+
+        Returns:
+            A fraction of GraphQL query string extract from all properties.
+        """
+        query = []
+        for _, prop in properties.wrapped.items():
+            query.append(prop.name)
+            if isinstance(prop.wrapped, (PropertiesList, ObjectType)):
+                query.append(
+                    f'{{ {UpWorkStream.property_list_to_graphql_query(prop.wrapped)} }}'
+                )
+        return ' '.join(query)
