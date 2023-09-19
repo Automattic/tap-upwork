@@ -57,6 +57,7 @@ CONTRACT_DETAILS_PROPERTIES = PropertiesList(
     Property('modifyDate', BooleanType),
     Property('startDate', BooleanType),
     Property('endDate', BooleanType),
+    Property('vendorOrganization', GENERIC_ORGANIZATION_PROPERTIES)
 )
 
 
