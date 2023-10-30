@@ -17,8 +17,9 @@ class TestContractTimeReportStream(TestCase):
     @patch('tap_upwork.streams.pendulum.instance')
     def test_get_url_params(self, mock_instance, mock_now):
         mock_now.return_value = pendulum.datetime(2023, 10, 30)
-        mock_instance.return_value = pendulum.datetime(2023, 10, 29)
+        mock_instance.return_value = pendulum.datetime(2023, 10, 25)
 
+        # Test with min_days_to_sync > state
         self.mock_contract_time_report_stream.config = {
             'organization_id': '12345',
             'min_days_to_sync': 7,
@@ -51,11 +52,20 @@ class TestContractTimeReportStream(TestCase):
             'filter': {
                 'organizationId_eq': '12345',
                 'timeReportDate_bt': {
-                    'rangeStart': '2023-10-29',
+                    'rangeStart': '2023-10-25',
                     'rangeEnd': '2023-10-30',
                 },
             },
             'pagination': {'first': 500},
         }
+        result = self.mock_contract_time_report_stream.get_url_params(None, None)
+        self.assertEqual(result, expected_params)
+
+        # Test without min_days_to_sync < state
+        self.mock_contract_time_report_stream.config = {
+            'organization_id': '12345',
+            'min_days_to_sync': 3,
+        }
+
         result = self.mock_contract_time_report_stream.get_url_params(None, None)
         self.assertEqual(result, expected_params)
