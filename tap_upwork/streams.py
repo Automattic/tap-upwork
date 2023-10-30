@@ -48,7 +48,8 @@ class ContractTimeReportStream(UpWorkStream):
         if 'min_days_to_sync' in self.config:
             start_date = min(
                 start_date,
-                pendulum.now() + timedelta(days=-int(self.config.get('min_days_to_sync')))
+                pendulum.now()
+                + timedelta(days=-int(self.config.get('min_days_to_sync'))),
             )
         params = {
             'filter': {
@@ -91,7 +92,8 @@ class TimeReportStream(UpWorkStream):
         if 'min_days_to_sync' in self.config:
             start_date = min(
                 start_date,
-                pendulum.now() + timedelta(days=-int(self.config.get('min_days_to_sync')))
+                pendulum.now()
+                + timedelta(days=-int(self.config.get('min_days_to_sync'))),
             )
         return {
             'filter': {

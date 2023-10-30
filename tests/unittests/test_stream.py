@@ -9,9 +9,13 @@ from tap_upwork.streams import ContractTimeReportStream
 
 class TestContractTimeReportStream(TestCase):
     def setUp(self):
-        self.mock_contract_time_report_stream = create_autospec(ContractTimeReportStream, instance=True)
-        self.mock_contract_time_report_stream.get_url_params = partial(ContractTimeReportStream.get_url_params,
-                                                                       self.mock_contract_time_report_stream)
+        self.mock_contract_time_report_stream = create_autospec(
+            ContractTimeReportStream, instance=True
+        )
+        self.mock_contract_time_report_stream.get_url_params = partial(
+            ContractTimeReportStream.get_url_params,
+            self.mock_contract_time_report_stream,
+        )
 
     @patch('tap_upwork.streams.pendulum.now')
     @patch('tap_upwork.streams.pendulum.instance')
