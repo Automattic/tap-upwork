@@ -32,6 +32,10 @@ plugins:
       kind: date_iso8601
       label: Start Date
       description: Determines how much historical data will be extracted
+    - name: min_days_to_sync
+      kind: integer
+      label: Min days to sync
+      description: Optional - Determines the minimum number of days to sync (if not set it will always sync from the last state)
   loaders:
   - name: target-jsonl
     variant: andyh1203

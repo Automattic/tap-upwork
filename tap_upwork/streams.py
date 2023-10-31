@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Optional, Dict, Any
 
 import pendulum
@@ -45,6 +45,12 @@ class ContractTimeReportStream(UpWorkStream):
         start_date = pendulum.instance(
             self.get_starting_timestamp(context) or pendulum.from_timestamp(0)
         )
+        if 'min_days_to_sync' in self.config:
+            start_date = min(
+                start_date,
+                pendulum.now()
+                + timedelta(days=-int(self.config.get('min_days_to_sync'))),
+            )
         params = {
             'filter': {
                 'organizationId_eq': self.config.get('organization_id'),
@@ -83,6 +89,12 @@ class TimeReportStream(UpWorkStream):
         start_date = pendulum.instance(
             self.get_starting_timestamp(context) or pendulum.from_timestamp(0)
         )
+        if 'min_days_to_sync' in self.config:
+            start_date = min(
+                start_date,
+                pendulum.now()
+                + timedelta(days=-int(self.config.get('min_days_to_sync'))),
+            )
         return {
             'filter': {
                 'organizationId_eq': self.config.get('organization_id'),
