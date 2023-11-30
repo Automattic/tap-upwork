@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
+import requests
 from singer_sdk.streams import GraphQLStream
 from singer_sdk.typing import ObjectType, PropertiesList
 
@@ -80,3 +81,12 @@ class UpWorkStream(GraphQLStream):
                     f'{{ {UpWorkStream.property_list_to_graphql_query(prop.wrapped)} }}'
                 )
         return ' '.join(query)
+
+    def _request(
+        self,
+        prepared_request: requests.PreparedRequest,
+        context: dict | None,
+    ) -> requests.Response:
+        response = super()._request(prepared_request, context)
+        self.logger.info(f'Response headers: {response.headers}')
+        return response

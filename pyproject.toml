@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "tap-upwork"
-version = "0.1.1"
+version = "0.1.2"
 description = "`tap-upwork` is a Singer tap for UpWork, built with the Meltano Singer SDK."
 readme = "README.md"
 authors = ["Joao Amaral"]
