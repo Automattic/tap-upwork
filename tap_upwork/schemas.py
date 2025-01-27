@@ -40,7 +40,7 @@ GENERIC_ORGANIZATION_PROPERTIES = PropertiesList(
 
 
 GENERIC_USER_PROPERTIES = PropertiesList(
-    Property('id', StringType, description='Unique user identifier'),
+    Property('id', NumberType, description='Unique user identifier'),
     Property('nid', StringType, description='Nickname ID of a user'),
     Property('rid', StringType, description='Record ID of a user'),
     Property('name', StringType, description='First name + abbreviated last name'),
@@ -53,10 +53,10 @@ CONTRACT_DETAILS_PROPERTIES = PropertiesList(
     Property('title', StringType),
     Property('status', StringType),
     Property('deliveryModel', StringType),
-    Property('createDate', BooleanType),
-    Property('modifyDate', BooleanType),
-    Property('startDate', BooleanType),
-    Property('endDate', BooleanType),
+    Property('createDate', StringType),
+    Property('modifyDate', StringType),
+    Property('startDate', StringType),
+    Property('endDate', StringType),
     Property('vendorOrganization', GENERIC_ORGANIZATION_PROPERTIES),
 )
 
