@@ -90,7 +90,7 @@ TIME_REPORT_PROPERTIES = PropertiesList(
     Property('memo', StringType, description='Memo associated with the time report'),
     Property(
         'totalHoursWorked',
-        StringType,
+        NumberType,
         description='Total hours worked for the time report',
     ),
     Property(
