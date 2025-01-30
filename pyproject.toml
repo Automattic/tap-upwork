@@ -21,7 +21,6 @@ pendulum = "^2.1.2"
 pytest = "^7.2.1"
 singer-sdk = { version="~=0.44.1", extras = ["testing"] }
 pylint = "*"
-pylint-quotes = "^0.2.3"
 black = "^23.3.0"
 
 [tool.poetry.extras]
