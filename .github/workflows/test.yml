@@ -11,7 +11,7 @@ jobs:
       GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
     strategy:
       matrix:
-        python-version: ["3.9", "3.10", "3.11"]
+        python-version: ["3.11", "3.12"]
     steps:
     - uses: actions/checkout@v4
     - name: Set up Python ${{ matrix.python-version }}
@@ -33,10 +33,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: Set up Python 3.10
+    - name: Set up Python 3.12
       uses: actions/setup-python@v4
       with:
-        python-version: '3.10'
+        python-version: '3.12'
     - name: Install Poetry
       run: |
         pip install poetry
