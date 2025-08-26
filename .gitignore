@@ -138,3 +138,6 @@ dmypy.json
 .pyre/
 
 config.json
+
+# IntelliJ
+.idea
