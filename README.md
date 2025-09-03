@@ -96,6 +96,13 @@ You can also test the `tap-upwork` CLI interface directly using `poetry run`:
 poetry run tap-upwork --help
 ```
 
+### `constraints.txt` generation:
+
+```bash
+$ poetry self add poetry-plugin-export
+$ poetry export --output constraints.txt --without-hashes
+```
+
 ### Testing with [Meltano](https://www.meltano.com)
 
 _**Note:** This tap will work in any Singer environment and does not require Meltano.
